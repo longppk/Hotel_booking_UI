@@ -1,93 +1,34 @@
 import React from 'react';
+import {PropTypes} from 'prop-types';
 import styled from 'styled-components';
 
-
-const IntroduceRightStyles = styled.section`
-    width: 1150px;
-    margin: auto;
-    padding: 10px 0;
-    .introduce-title{
-        text-align: center;
-        font-family: "Playfair Display", serif;
-        font-size: 36px;
-    }
-    .introduce-content{
-        position: relative;
-        margin-top: 50px;
-        display: flex;
-        flex-direction: row;
-        justify-content: end;
-        .content-left{
-            width: 550px;
-            position: absolute;
-            left: 0;
-            top: 10%;
-            border-radius: 20px;
-            padding: 30px 120px 30px 40px;
-            border: 1px solid #C09B5A;
-            .title-content{
-                font-weight: 400;
-                font-family: "Playfair Display", serif;
-                font-size: 28px;
-            }
-            .description-content{
-                margin: 20px 0;
-                text-align: justify;
-                font-family: "Montserrat Alternates", sans-serif;
-            }
-            .btn-box{
-                .btn-content{
-                    padding: 7px 25px;
-                    background-color: #C09B5A;
-                    border-radius: 10px;
-                    text-transform: uppercase;
-                    font-size: 14px;
-                    color: #fff;
-                    border: 1px solid #C09B5A;
-                    cursor: pointer;
-                    transition: .5s;
-                    &:hover{
-                        color: #C09B5A;
-                        background-color: #fff;
-                    }
-                }
-            }
-        }
-        .content-right{
-            width: 650px;
-            height: 400px;
-            .content-img{
-                width: 100%;
-                height: 100%;
-                border-radius: 20px;
-            }
-        }
-    }
-`
 const IntroduceRight = ({title, ...props}) => {
+    IntroduceRight.propTypes = {
+        title: PropTypes.string,
+      };
     return (
-        <IntroduceRightStyles>
-            <div className='introduce-title'>
+        <div className='w-full mx-auto py-12'>
+            <div className='font-playfair text-3xl text-center font-semibold my-10'>
                 <h3>{title}</h3>
             </div>
-            <div className='introduce-content'>
-                <div className='content-left'>
+            <div className='flex sm:flex-col-reverse sm:gap-3 sm:w-[90%] md:flex-row lg:w-[85%] mx-auto relative justify-start'>
+                <div className='sm:p-10 md:w-[60%] lg:w-1/2 md:p-10 md:pl-28 md:absolute right-0 top-[10%] border-solid border-[#C09B5A] border-[1px] rounded-xl'>
                     <div>
-                        <h1 className='title-content'>{props.titleContent}</h1>
+                        <h1 className='text-2xl font-medium font-playfair mb-5'>{props.titleContent}</h1>
                     </div>
-                    <div className='description-content'>
+                    <div className='font-montserrat text-sm leading-6 text-justify'>
                         <p>{props.content}</p>
                     </div>
-                    <div className='btn-box'>
-                        <button className='btn-content'>SEE MORE</button>
+                    <div className='mt-5 text-end'>
+                        <button className='px-4 py-2 bg-[#C09B5A] text-white rounded-xl text-sm border-transparent duration-300 border-[1px] border-solid hover:bg-white hover:text-[#C09B5A] hover:border-[#C09B5A]'>SEE MORE</button>
                     </div>
                 </div>
-                <div className='content-right'>
-                    <img className='content-img' src={props.image} alt='introduce'/>
+                <div className='md:w-1/2 lg:w-[55%]'>
+                    <img className='md:h-[330px] w-full lg:h-[430px] rounded-xl' src={props.image} alt='introduce'/>
                 </div>
             </div>
 
-        </IntroduceRightStyles>
+        </div>
     );
 };
 

@@ -1,18 +1,49 @@
 import { useState } from "react";
 
 function useHandleChange(initialValues) {
-    const [values, setValue] = useState(initialValues)
+    const [values, setValues] = useState({ ...initialValues, avatarPreview: null });
 
     const handleChange = (e) => {
-        setValue({
-            ...values,
-            [e.target.name]: e.target.value,
-        })
-    }
+        const { name, type } = e.target;
+
+        if (type === "file") {
+            const file = e.target.files[0];
+            if (file) {
+                try {
+                    const avatarPreview = URL.createObjectURL(file);
+                    setValues({
+                        ...values,
+                        [name]: file,
+                        avatarPreview: avatarPreview,
+                    });
+                } catch (error) {
+                    console.error("Error creating object URL:", error);
+                    setValues({
+                        ...values,
+                        [name]: file,
+                        avatarPreview: null,
+                    });
+                }
+            } else {
+                setValues({
+                    ...values,
+                    [name]: null,
+                    avatarPreview: null,
+                });
+            }
+        } else {
+            setValues({
+                ...values,
+                [name]: e.target.value,
+            });
+        }
+    };
+
     return {
         values,
-        handleChange
-    }
+        handleChange,
+        setValues
+    };
 }
 
 export default useHandleChange;
