@@ -6,7 +6,7 @@ const IntroduceLeft = ({title, ...props}) => {
         title: PropTypes.string,
       };
     return (
-        <div className='w-full mx-auto py-12'>
+        <div className='w-full mx-auto py-12 relative'>
             <div className='font-playfair text-3xl text-center font-semibold my-10'>
                 <h3>{title}</h3>
             </div>

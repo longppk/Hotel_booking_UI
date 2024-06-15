@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { ImSortAmountAsc, ImSortAmountDesc } from "react-icons/im";
 import useHandleChange from "../../../hooks/useHandleChange";
-import ReactPaginate from 'react-paginate';
+import ReactPaginate from "react-paginate";
 
 const SidebarStyles = styled.section`
   display: flex;
@@ -31,18 +31,17 @@ const SidebarStyles = styled.section`
   }
 `;
 
-
-const Sidebar = ({ onItemClick, className }) => {
+const Sidebar = ({ onItemClick, className, onSort }) => {
   const [sideBar, setSideBar] = useState(false);
   const [activeButton, setActiveButton] = useState(null);
   const [data, setData] = useState(null);
   const [selectedIds, setSelectedIds] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
-
-  
   const handleClick = (option) => {
+    onSort(option);
     setSelectedOption(option);
   };
+
   const changeBackground = () => {
     if (window.scrollY > 10) {
       setSideBar(true);
@@ -68,7 +67,7 @@ const Sidebar = ({ onItemClick, className }) => {
 
   // const handleButtonClick = (buttonName, itemId) => {
   //   setActiveButton(buttonName);
-    
+
   // };
   const handleCheckboxChange = (id) => {
     setSelectedIds((prev) => {
@@ -85,10 +84,10 @@ const Sidebar = ({ onItemClick, className }) => {
   }, [selectedIds, onItemClick]);
   console.log(selectedIds);
   return (
-    <div className={`${className} bg-white p-5`}>
+    <div className={`${className} bg-white`}>
       <h1 className="text-center font-semibold">Filter to</h1>
-      <h2 className="text-sm">Type room:</h2>
-      <ul className="btn">
+      <h2 className="text-md  p-2">Type room:</h2>
+      <ul className="grid grid-cols-3">
         {data?.map((item) => (
           <li
             key={item.id}
@@ -112,21 +111,29 @@ const Sidebar = ({ onItemClick, className }) => {
           </li>
         ))}
       </ul>
-      <h2>Price:</h2>
-      <ul className="flex gap-5 text-gray-600">
-      <li
-        className={`select-none relative flex items-center gap-3 w-1/2 p-2 rounded-xl border-gray-300 border-[1px] cursor-pointer bg-gray-200 ${selectedOption === 'lowToHigh' ? ' border-[#d70018] text-[#d70018] after:content-["✓"] after:absolute after:top-0 after:right-0 after:w-5 after:h-3 after:rounded-tr-xl after:rounded-bl-xl after:bg-[#d70018] after:text-white after:flex after:items-center after:justify-center after:text-[7px] bg-[#FEF2F2]' : ''}`}
-        onClick={() => handleClick('lowToHigh')}
-      >
-        <ImSortAmountAsc /> <span className="text-xs ">Price low - high</span>
-      </li>
-      <li
-        className={`select-none relative flex items-center gap-3 w-1/2 p-2 rounded-xl border-gray-300 border-transparent border-[1px] cursor-pointer bg-gray-200 ${selectedOption === 'highToLow' ? ' border-[#d70018] text-[#d70018] after:content-["✓"] after:absolute after:top-0 after:right-0 after:w-5 after:h-3 after:rounded-tr-xl after:rounded-bl-xl after:bg-[#d70018] after:text-white after:flex after:items-center after:justify-center after:text-[7px] bg-[#FEF2F2]' : ''}`}
-        onClick={() => handleClick('highToLow')}
-      >
-        <ImSortAmountDesc /> <span className="text-xs">Price high - low</span>
-      </li>
-    </ul>
+      <h2 className="p-2">Sort to:</h2>
+      <ul className="flex gap-5 text-gray-600 max-lg:px-3 max-md:flex-row max-md:w-full">
+        <li
+          className={`select-none relative flex items-center gap-3 w-1/2 p-2 rounded-xl border-solid border-[1px] cursor-pointer max-lg:w-[20%] lg:w-[15%] bg-gray-200 ${
+            selectedOption === "lowToHigh"
+              ? ' border-[#d70018] text-[#d70018] after:content-["✓"] after:absolute after:top-0 after:right-0 after:w-5 after:h-3 after:rounded-tr-xl after:rounded-bl-xl after:bg-[#d70018] after:text-white after:flex after:items-center after:justify-center after:text-[7px] bg-[#FEF2F2]'
+              : ""
+          }`}
+          onClick={() => handleClick("lowToHigh")}
+        >
+          <ImSortAmountAsc /> <span className="text-xs ">Price low - high</span>
+        </li>
+        <li
+          className={`select-none relative flex items-center gap-3 w-1/2 p-2 rounded-xl border-solid border-[1px] cursor-pointer max-lg:w-[20%] lg:w-[15%] bg-gray-200 ${
+            selectedOption === "highToLow"
+              ? ' border-[#d70018] text-[#d70018] after:content-["✓"] after:absolute after:top-0 after:right-0 after:w-5 after:h-3 after:rounded-tr-xl after:rounded-bl-xl after:bg-[#d70018] after:text-white after:flex after:items-center after:justify-center after:text-[7px] bg-[#FEF2F2]'
+              : ""
+          }`}
+          onClick={() => handleClick("highToLow")}
+        >
+          <ImSortAmountDesc /> <span className="text-xs">Price high - low</span>
+        </li>
+      </ul>
     </div>
   );
 };

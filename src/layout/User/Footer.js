@@ -3,108 +3,6 @@ import styled from "styled-components";
 import { IoMailOutline } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
 import { BiSolidMap } from "react-icons/bi";
-const FooterStyles = styled.section`
-  margin: auto;
-  .footer-info {
-    border-top-right-radius: 10px;
-    border-top-left-radius: 10px;
-    padding: 25px 0;
-    background-color: #7f3f30;
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    font-size: 16px;
-    text-transform: uppercase;
-    .footer-register {
-      width: 400px;
-      position: relative;
-      .footer-email {
-        color: #000;
-        font-size: 14px;
-        padding: 10px 100px 10px 20px;
-        width: 100%;
-      }
-      .btn-register {
-        background-color: #c09b5a;
-        padding: 5px 10px;
-        position: absolute;
-        right: 2px;
-        bottom: 3px;
-        color: #fff;
-      }
-    }
-  }
-  .footer-static {
-    padding: 40px 0;
-    color: #fff;
-    background-color: #000;
-    .footer-content {
-      width: 1100px;
-      margin: auto;
-      display: flex;
-      .footer-address {
-        width: 400px;
-        font-size: 14px;
-        border-right: 1px solid #646464;
-        .logo {
-          display: flex;
-          gap: 20px;
-          .header-logo {
-            img {
-              width: 60px;
-              height: 60px;
-            }
-          }
-          .logo-name {
-            font-size: 40px;
-            font-family: "Playfair Display";
-          }
-        }
-        .address-detail {
-          margin: 10px 0;
-        }
-      }
-      .footer-support {
-        width: 100%;
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        .list-support {
-          padding: 20px;
-          display: block;
-          .title-support {
-            line-height: 39px;
-            font-weight: 700;
-            text-transform: uppercase;
-            font-family: "Playfair Display";
-          }
-          .partner {
-            display: flex;
-            .image-link {
-              width: 50px;
-              height: 50px;
-              border-radius: 50%;
-            }
-          }
-          .item-support {
-            display: flex;
-            flex-direction: column;
-            .support-link {
-              font-size: 13px;
-              line-height: 1.8rem;
-              text-decoration: none;
-              display: block;
-              width: 100%;
-              color: #fff;
-              font-family: "Montserrat Alternates", sans-serif;
-            }
-          }
-        }
-      }
-    }
-  }
-`;
 const Footer = () => {
   return (
     <div className="w-full mt-14">
@@ -190,20 +88,20 @@ const Footer = () => {
             </div>
           </div>
           <div className="flex w-1/2 gap-12">
-            <div className="flex w-1/2 flex-col gap-2">
-              <NavLink className="text-white" to={"/"}>
+            <div className="flex w-1/2 flex-col gap-2 capitalize">
+              <NavLink className="text-white hover:pl-3 duration-500 hover:text-[#C09B5A]" to={"/"}>
                 Location & map
               </NavLink>
-              <NavLink className="text-white" to={"/"}>
+              <NavLink className="text-white hover:pl-3 duration-500 hover:text-[#C09B5A]" to={"/"}>
                 Event
               </NavLink>
-              <NavLink className="text-white" to={"/"}>
+              <NavLink className="text-white hover:pl-3 duration-500 hover:text-[#C09B5A]" to={"/"}>
                 News
               </NavLink>
-              <NavLink className="text-white" to={"/"}>
+              <NavLink className="text-white hover:pl-3 duration-500 hover:text-[#C09B5A]" to={"/"}>
                 Policy Booking
               </NavLink>
-              <NavLink className="text-white" to={"/"}>
+              <NavLink className="text-white hover:pl-3 duration-500 hover:text-[#C09B5A]" to={"/"}>
                 cooperate
               </NavLink>
             </div>

@@ -228,7 +228,7 @@ const RoomAdd = () => {
     setImages((prevImages) => prevImages.filter((_, i) => i !== index));
     setImagesData((pre) => pre.filter((_, i) => i !== index));
   };
-  console.log(imagesData);
+  console.log(values);
   return (
     <RoomAddStyles>
       <Header />
@@ -369,7 +369,7 @@ const RoomAdd = () => {
           </label>
           <input
             id="width"
-            name="length"
+            name="width"
             min={5}
             className="input-field"
             type="number"

@@ -2,31 +2,8 @@ import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { LuLogOut } from "react-icons/lu";
-const AuthPopupStyles = styled.ul`
-  width: 160px;
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-  font-family: "Libre Baskerville", serif;
-  padding: 10px;
-  color: #000;
-  .item {
-    .item-name{
-      display: block;
-      padding: 5px 10px;
-    }
-    &:hover {
-      background-color: #e5e5e5;
-    }
-    .item-btn {
-      display: flex;
-      align-items: center;
-      padding: 5px 10px;
-      width: 100%;
-      gap: 5px;
-    }
-  }
-`;
+
+
 const AuthPopup = ({ className, data }) => {
   const navigate = useNavigate();
     const handleLogout = () => {
@@ -38,9 +15,9 @@ const AuthPopup = ({ className, data }) => {
         localStorage.removeItem('role');
     };
   return (
-    <AuthPopupStyles className={className}>
+    <div className={`${className} bg-white w-1/3 p-5` }>
       {data ? (
-        <div>
+        <div className="flex flex-col">
           <li className="item">
             <NavLink to="/profile" className="item-name">My account</NavLink>
           </li>
@@ -52,16 +29,16 @@ const AuthPopup = ({ className, data }) => {
           </li>
         </div>
       ) : (
-        <div>
-          <li className="item">
+        <div className="flex flex-col">
+          <li className="py-2">
             <NavLink className="item-name" to="/authenticate">SignIn</NavLink>
           </li>
-          <li className="item">
+          <li className="py-2">
             <NavLink className="item-name" to="/authenticate">SignUp</NavLink>
           </li>
         </div>
       )}
-    </AuthPopupStyles>
+    </div>
   );
 };
 

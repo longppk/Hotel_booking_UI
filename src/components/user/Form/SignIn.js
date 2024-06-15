@@ -127,7 +127,7 @@ const SignIn = () => {
       errors.password = "";
     }
     setErrorMessage(errors);
-    if (!(Object.values(errors).some(error => error !== ''))) {
+    if (!Object.values(errors).some((error) => error !== "")) {
       try {
         const { username, password } = values;
         const dataSend = { username, password };
@@ -142,7 +142,7 @@ const SignIn = () => {
         });
         if (res.data.role === "USER") {
           navigate("/");
-        }else{
+        } else {
           navigate("/admin");
         }
       } catch (error) {
@@ -159,94 +159,103 @@ const SignIn = () => {
           }
         }
       }
-    }else{
+    } else {
       return;
     }
-
   };
   return (
-    <SignInStyles>
+    <section className="w-full">
       <form
         onSubmit={handleSubmit}
-        className="container-form"
+        className="max-md:w-1/2 md:w-[38%] lg:w-1/3 mx-auto"
         autoComplete="off"
       >
-        <div className="container-field">
-          <NavLink to={"/"} className="logo">
-            <div>
-              <span className="logo-name">Vela hotel</span>
-              <span className="star-box">
+        <div className="">
+          <NavLink to={"/"} className="">
+            <div className="text-center mt-10">
+              <span className="text-[#312ECB] text-2xl font-bold text-center uppercase">
+                Vela hotel
+              </span>
+              <span className="flex justify-center">
                 <img
-                  className="img-star"
+                  className="w-[20px] h-[20px]"
                   src="https://png.pngtree.com/png-clipart/20231019/original/pngtree-3d-golden-star-png-image_13370055.png"
                   alt="hotel"
                 />
                 <img
-                  className="img-star"
+                  className="w-[20px] h-[20px]"
                   src="https://png.pngtree.com/png-clipart/20231019/original/pngtree-3d-golden-star-png-image_13370055.png"
                   alt="hotel"
                 />
                 <img
-                  className="img-star"
+                  className="w-[20px] h-[20px]"
                   src="https://png.pngtree.com/png-clipart/20231019/original/pngtree-3d-golden-star-png-image_13370055.png"
                   alt="hotel"
                 />
                 <img
-                  className="img-star"
+                  className="w-[20px] h-[20px]"
                   src="https://png.pngtree.com/png-clipart/20231019/original/pngtree-3d-golden-star-png-image_13370055.png"
                   alt="hotel"
                 />
                 <img
-                  className="img-star"
+                  className="w-[20px] h-[20px]"
                   src="https://png.pngtree.com/png-clipart/20231019/original/pngtree-3d-golden-star-png-image_13370055.png"
                   alt="hotel"
                 />
               </span>
             </div>
           </NavLink>
-          <label className="form-label" htmlFor="username">
-            Email
-          </label>
-          <input
-            className="form-input"
-            placeholder="Please enter your email"
-            type="email"
-            id="username"
-            name="username"
-            onChange={handleChange}
-          ></input>
-          <p className="form-message">{errorMessage.username}</p>
+          <div className="py-2">
+            <label className="block " htmlFor="username">
+              Email
+            </label>
+            <input
+              className="w-full px-3 py-2 border-solid border-[1px] border-[#ced4da]"
+              placeholder="Please enter your email"
+              type="email"
+              id="username"
+              name="username"
+              onChange={handleChange}
+            />
+            <p className="text-sm text-[#C92127]">{errorMessage.username}</p>
+          </div>
+          <div className="py-2">
+            <label className="block" htmlFor="password">
+              Password
+            </label>
+            <input
+              className="w-full px-3 py-2 border-solid border-[1px] border-[#ced4da]"
+              placeholder="Please enter your password"
+              type="password"
+              id="password"
+              name="password"
+              onChange={handleChange}
+            ></input>
+            <p className="text-sm text-[#C92127]">{errorMessage.password}</p>
+          </div>
         </div>
-        <div className="container-field">
-          <label className="form-label" htmlFor="password">
-            Password
-          </label>
-          <input
-            className="form-input"
-            placeholder="Please enter your password"
-            type="password"
-            id="password"
-            name="password"
-            onChange={handleChange}
-          ></input>
-          <p className="form-message">{errorMessage.password}</p>
+        <div className="text-end ">
+          <NavLink
+            className="text-sm font-medium text-[#c92127]"
+            to={"/forgotPass"}
+          >
+            Forgot your password ?
+          </NavLink>
         </div>
-        <div className="forgot-pass">
-          <NavLink to={"/forgotPass"}>Forgot your password ?</NavLink>
-        </div>
-        <div className="form-box-btn">
-          <button type="submit" className="btn-submit">
+        <div className="mt-7">
+          <button type="submit" className="flex items-center justify-center w-4/5 mx-auto mb-3 p-2 bg-[#C92127] text-white rounded">
             Login
           </button>
-          <button type="button" className="btn-facebook">
-            <span className="icon-box">
-              <FaFacebookF className="btn-icon" />
-              <span>Login with facebook</span>
-            </span>
+          <button
+            type="button"
+            className="flex items-center justify-center w-4/5 mx-auto mb-3 p-2 bg-blue-800 text-white rounded"
+          >
+            <FaFacebookF className="mr-2" />
+            <span>Login With Facebook</span>
           </button>
         </div>
       </form>
-    </SignInStyles>
+    </section>
   );
 };
 export default SignIn;

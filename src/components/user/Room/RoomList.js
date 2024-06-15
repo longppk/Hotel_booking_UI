@@ -5,204 +5,182 @@ import Sidebar from "../Sidebar/Sidebar";
 import { IoBed } from "react-icons/io5";
 import { FaUserFriends } from "react-icons/fa";
 import { IoMdResize } from "react-icons/io";
-
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Cart from "../Cart/Cart";
-const RoomListStyles = styled.section`
-  padding-top: 80px;
-  width: 1240px;
-  margin: auto;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  .search-room {
-    position: static;
-    width: 100%;
-    .search-container {
-      width: 100%;
-      background: #c09b5a;
-    }
-  }
-  .container-list-room {
-    margin: 20px 0;
-    display: flex;
-    max-width: 1240px;
-    .activeSidebar {
-      background-color: #c09b5a;
-      position: sticky;
-      top: 90px;
-    }
-    .room-list {
-      display: flex;
-      flex-direction: column;
-      width: 700px;
-      border-radius: 20px;
-      .room-item {
-        display: flex;
-        border: 1px solid #c09b5a;
-        background: #fff;
-        border-radius: 20px;
-        margin-bottom: 10px;
-        padding: 10px;
-        font-family: "Montserrat", sans-serif;
-        .room-image {
-          width: 300px;
-          height: auto;
-          .image-main {
-            display: block;
-            width: 100%;
-            height: 180px;
-          }
-          .list-image {
-            margin-top: 10px;
-            display: flex;
-            gap: 5px;
-            .image-sub {
-              width: calc(215px / 3);
-              height: 50px;
-            }
-          }
-        }
-        .room-information {
-          width: 700px;
-          padding: 0 20px;
-          h2 {
-            font-weight: bold;
-          }
-          .information-content {
-            position: relative;
-            margin-top: 20px;
-            .information-detail {
-              display: flex;
-              align-items: center;
-              gap: 7px;
-              padding: 5px 0;
-            }
-            .btn {
-              bottom: 15px;
-              right: 0;
-              position: absolute;
-              .btn-booking {
-                padding: 5px 10px;
-                background-color: #c09b5a;
-                color: #fff;
-                cursor: pointer;
-                font-weight: 600;
-                text-transform: capitalize;
-                border: 2px solid #c09b5a;
-                transition: 0.3s;
-                &:hover {
-                  color: #c09b5a;
-                  background-color: #fff;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+import { MdFilterListAlt } from "react-icons/md";
+import ReactPaginate from "react-paginate";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
+
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+
+import { EffectCoverflow, Pagination, Navigation } from "swiper/modules";
+
+const itemsPerPage = 6;
 
 const RoomList = () => {
-  const [data, setData] = useState();
   const [selectedImage, setSelectedImage] = useState();
   const [selectedRoomId, setSelectedRoomId] = useState();
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [dataCart, setDataCart] = useState(null);
-  const [item, setItem] = useState();
+  const [selectedItem, setSelectedItem] = useState([]);
   const [itemRemove, setItemRemove] = useState();
+  const [pageCurrent, setPageCurrent] = useState(1);
+  const [sort, setSort] = useState(null);
+  const [item, setItem] = useState(null);
+  const [showFilter, setShowFilter] = useState(false);
   const searchData = useSelector((state) => state.search.searchData);
 
-  const handleItemClick = (itemId) => {
-    setItem(itemId);
-  };
-  console.log(item);
-  const handleImageClick = (imageId, roomId) => {
-    setSelectedImage(imageId);
-    setSelectedRoomId(roomId);
-  };
-  console.log(searchData);
   useEffect(() => {
     const storedItems = JSON.parse(localStorage.getItem("selectedItems")) || [];
     setSelectedItem(storedItems);
   }, [itemRemove]);
 
+  const handleItemClick = (itemId) => {
+    setItem(itemId);
+  };
+
+  const handleImageClick = (imageId, roomId) => {
+    setSelectedImage(imageId);
+    setSelectedRoomId(roomId);
+  };
+
   const handleRoomItemClick = (itemIdRoom) => {
-    setSelectedItem(itemIdRoom);
-    const selectedItemData = searchData.find((item) => item.id === itemIdRoom);
+    const selectedItemData = searchData.rooms.find(
+      (item) => item.id === itemIdRoom
+    );
     let storedItems = JSON.parse(localStorage.getItem("selectedItems")) || [];
     storedItems.push(selectedItemData);
+    setSelectedItem(storedItems); // Update state immediately
     localStorage.setItem("selectedItems", JSON.stringify(storedItems));
   };
+
   const isItemSelected = (itemId) => {
-    const storedItems = JSON.parse(localStorage.getItem("selectedItems")) || [];
-    console.log(storedItems.some((item) => item.id === itemId));
-    return storedItems.some((item) => item.id === itemId);
+    return selectedItem.some((item) => item.id === itemId);
   };
-  const handleItemRemove = async (itemId) => {
+
+  const handleItemRemove = (itemId) => {
+    const updatedItems = selectedItem.filter((item) => item.id !== itemId);
+    setSelectedItem(updatedItems); // Update state immediately
+    localStorage.setItem("selectedItems", JSON.stringify(updatedItems));
     setItemRemove(itemId);
   };
+
+  const [pageCount, setPageCount] = useState(0);
+  const [itemOffset, setItemOffset] = useState(0);
+
+  useEffect(() => {
+    if (!searchData?.totalResult) return;
+    setPageCount(Math.ceil(searchData.totalResult / itemsPerPage));
+  }, [searchData, itemOffset]);
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % searchData.totalResult;
+    setItemOffset(newOffset);
+    setPageCurrent(event.selected + 1);
+  };
+
+  const handleSort = (option) => {
+    setSort(option);
+  };
+
+  const handleShowFilter = () => {
+    setShowFilter((pre) => !pre);
+  };
+
   return (
     <div>
-      <Search className=" px-32 pt-20 pb-5" item={item} />
-      <div className="w-full px-3 flex">
-        <Sidebar className="w-[30%]" onItemClick={handleItemClick} />
-        <div className="w-[70%] pl-10 flex flex-col gap-4">
-          {searchData
-            ?.filter((item) => item !== null)
-            .map((item) => (
-              <div key={item.id} className="w-full flex gap-3 bg-white p-5">
-                <div className="w-1/2 flex flex-col gap-2">
-                  {item?.images?.length > 0 && (
-                    <>
-                      <img
-                        className="w-full"
-                        src={
-                          selectedRoomId === item.id && selectedImage
-                            ? item.images.find(
-                                (image) => image.id === selectedImage
-                              )?.imageUrl
-                            : item.images[0]?.imageUrl
-                        }
-                        alt="hotel"
-                      />
-                      <div className="flex gap-2 w-full">
-                        {item.images.slice(0, 4).map((image) => (
-                          <button
-                            className="w-1/4 "
-                            key={image.id}
-                            onClick={() => handleImageClick(image.id, item.id)}
-                          >
-                            <img
-                              className="w-full"
-                              src={image.imageUrl}
-                              alt="hotel"
-                            />
-                          </button>
-                        ))}
+      <Search
+        className="px-32 pt-20 pb-5 mx-3 max-lg:px-0 bg-white "
+        item={item}
+        itemsPerPage={itemsPerPage}
+        pageCurrent={pageCurrent}
+        sort={sort}
+      />
+      <div className=" bg-white mx-3 block px-5 pb-5">
+        <button
+          onClick={handleShowFilter}
+          className="flex items-center gap-2 bg-gray-200 px-3 py-2 rounded-xl"
+        >
+          <MdFilterListAlt className="text-xl" />
+          <span>Filter</span>
+        </button>
+      </div>
+      <Sidebar
+        className={`transition-all duration-500 ease-in-out top-20 overflow-hidden static mx-3 ${
+          showFilter ? "block h-[270px] mx-3 p-5" : "h-0 p-0"
+        }`}
+        onItemClick={handleItemClick}
+        onSort={handleSort}
+      />
+      <div className="w-full px-3 mt-2 flex justify-between max-md:flex-col flex-row relative">
+        <div className="room-list w-[70%] flex flex-col gap-4 max-md:w-full max-md:pl-0 max-md:mt-5">
+          {searchData?.rooms && searchData.rooms.length > 0 ? (
+            searchData.rooms
+              .filter((item) => item !== null)
+              .map((item) => (
+                <div
+                  key={item.id}
+                  className="w-full h-auto flex gap-3 bg-white p-5"
+                >
+                  <div className="w-1/3 flex flex-col gap-2">
+                    <Swiper
+                      effect={"coverflow"}
+                      grabCursor={true}
+                      centeredSlides={true}
+                      loop={true}
+                      slidesPerView={"auto"}
+                      coverflowEffect={{
+                        rotate: 0,
+                        stretch: 0,
+                        depth: 100,
+                        modifier: 2.5,
+                      }}
+                      pagination={{ el: ".swiper-pagination", clickable: true }}
+                      navigation={{
+                        nextEl: ".swiper-button-next",
+                        prevEl: ".swiper-button-prev",
+                        clickable: true,
+                      }}
+                      modules={[EffectCoverflow, Pagination, Navigation]}
+                      className="swiper_container"
+                    >
+                      {item?.images?.map((items, index) => (
+                        <SwiperSlide key={index + 1}>
+                          <img src={items.imageUrl} alt="flower" />
+                        </SwiperSlide>
+                      ))}
+                      <div className="slider-controler">
+                        <div className="swiper-button-prev slider-arrow">
+                          <SlArrowLeft className="text-blue-700 !w-1/2" />
+                        </div>
+                        <div className="swiper-button-next slider-arrow">
+                          <SlArrowRight className="text-blue-700 !w-1/2" />
+                        </div>
                       </div>
-                    </>
-                  )}
-                </div>
-                <div className="font-montserrat">
-                  <h2 className="text-base font-medium">{item.name}</h2>
-                  <div className="text-sm">
-                    <p>{item.description}</p>
-                    <p className="flex gap-3 items-center">
-                      {" "}
-                      <IoBed />
-                      {item.bed}
-                    </p>
-                    <p className="flex gap-3 items-center">
-                      <FaUserFriends />
-                      {item.capacity} guest
-                    </p>
-                    <p className="flex gap-3 items-center">
-                      <IoMdResize />
-                      {item.length * item.width} m2
-                    </p>
+                    </Swiper>
+                  </div>
+                  <div className="w-2/3 font-montserrat select-none">
+                    <h2 className="text-base font-medium pt-2">{item.name}</h2>
+                    <div className="text-sm h-[130px]">
+                      <p className="py-1">{item.description}</p>
+                      <div className="flex gap-3">
+                        <p className="flex gap-3 items-center py-1">
+                          <IoBed />
+                          {item.bed}
+                        </p>
+                        <p className="flex gap-3 items-center py-1">
+                          <FaUserFriends />
+                          {item.capacity} guest
+                        </p>
+                        <p className="flex gap-3 items-center py-1">
+                          <IoMdResize />
+                          {item.length * item.width}m²
+                        </p>
+                      </div>
+                    </div>
                     <div className="flex justify-between items-center">
                       <p className="italic font-semibold">
                         Price: {item.price.toLocaleString("vi-VN")}
@@ -212,17 +190,39 @@ const RoomList = () => {
                         onClick={() => handleRoomItemClick(item.id)}
                         className="bg-[#C09B5A] p-2 font-medium text-white"
                       >
-                        {" "}
-                        {isItemSelected(item.id) ? "selected" : "booking now"}
+                        {isItemSelected(item.id) ? "Selected" : "Booking Now"}
                       </button>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+          ) : (
+            <p>No data</p>
+          )}
         </div>
-        {/* <Cart selectedItem={selectedItem} onItemClick={handleItemRemove}/> */}
+        <Cart
+          className="w-[30%] max-md:w-full p-3 h-1/2 bg-white ml-2 text-[#333333]"
+          selectedItem={selectedItem}
+          onItemClick={handleItemRemove}
+        />
       </div>
+
+      <ReactPaginate
+        breakLabel="..."
+        nextLabel="next >"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={5}
+        pageCount={pageCount}
+        previousLabel="< previous"
+        renderOnZeroPageCount={null}
+        className="pagination justify-center items-center flex gap-12 mt-8"
+        pageLinkClassName="p-3 bg-white"
+        previousLinkClassName="p-3 bg-white"
+        nextLinkClassName="p-3 bg-white"
+        breakLinkClassName="p-3 bg-white"
+        containerClassName="flex"
+        activeLinkClassName="text-red-500"
+      />
     </div>
   );
 };

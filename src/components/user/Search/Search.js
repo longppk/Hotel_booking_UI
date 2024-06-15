@@ -66,7 +66,7 @@ const SearchStyles = styled.div`
   }
 `;
 
-const Search = ({ className, item}) => {
+const Search = ({ className, item, itemsPerPage, pageCurrent, sort}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const today = new Date().toISOString().split("T")[0];
@@ -106,7 +106,7 @@ const Search = ({ className, item}) => {
     if (item) {
       try {
         const res = await axios.get(
-          `http://localhost:8080/api/user/available-rooms?checkIn=${values.checkIn}&checkOut=${values.checkOut}&requiredCapacity=${amount}&categoryId=${item}`
+          `http://localhost:8080/api/user/available-rooms?checkIn=${values.checkIn}&checkOut=${values.checkOut}&requiredCapacity=${amount}&categoryId=${item}&pageCurrent=${pageCurrent}&pageSize=${itemsPerPage}&sort=${sort}`
         );
         if (res.data) {
           dispatch(setSearchData(res.data));
@@ -120,7 +120,7 @@ const Search = ({ className, item}) => {
   useEffect(() => {
     handleSearch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [item, values.checkIn, values.checkOut, amount]);
+  }, [item, values.checkIn, values.checkOut, amount, pageCurrent, sort]);
 
   // gán checkOut là ngày tiếp theo của checkIn nếu checkIn lớn hơn hoặc bằng ngày checkOut
   useEffect(() => {

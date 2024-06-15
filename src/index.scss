@@ -8,6 +8,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Montserrat:ital@0;1&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 *,
 *::before,
 *::after {
@@ -62,78 +63,150 @@ h5,
 h6 {
   overflow-wrap: break-word;
 }
-.activeNav{
-  background-color: #222224;
-}
-.swiper{
-  margin-top: 20px;
-}
-
-///Swiper libary//
-.swiper-slide img {
-  width: 100%;
-  height: 350px;
-  object-fit: cover;
-  user-select: none;
-}
-
-.swiper-slide-shadow-left,
-.swiper-slide-shadow-right {
-  display: none;
-}
-
-.slider-controler {
-  position: absolute;
-  bottom: 379px;
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.swiper-slide {
-  width: 60% !important;
-  height: 600px !important;
-  position: relative;
-  margin: 0 80px;
-  @media (min-width: 640px) and (max-width: 1024px) {
-    width: 90% !important;
+.room-category{
+  .swiper{
+    margin-top: 20px;
+  }
+  
+  ///Swiper libary//
+  .swiper-slide img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    user-select: none;
+  }
+  
+  .swiper-slide-shadow-left,
+  .swiper-slide-shadow-right {
+    display: none;
+  }
+  
+  .slider-controler {
+    position: absolute;
+    bottom: 379px;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .swiper-slide {
+    width: 60% !important;
+    height: 600px !important;
+    position: relative;
     margin: 0 80px;
+    @media (min-width: 640px) and (max-width: 1024px) {
+      width: 90% !important;
+      margin: 0 80px;
+    }
+  }
+  
+  .slider-controler .swiper-button-next {
+    left: 75%;
+    color: #fff;
+  }
+  .slider-controler .swiper-button-prev {
+    left: 23%;
+    color: #fff;
+  }
+  
+  
+  .slider-controler .slider-arrow::after {
+    content: '';
+  }
+  .swiper-slide-prev {
+      img {
+        opacity: 0.4;
+      }
+      .container-content {
+        visibility: hidden;
+      }
+      .btn-box{
+        visibility: hidden;
+      }
+    }
+    .swiper-slide-next {
+      img {
+        opacity: 0.4;
+      }
+      .container-content {
+        visibility: hidden;
+      }
+      .btn-box{
+        visibility: hidden;
+      }
+    }
+}
+
+
+///////////////////////////////////////////////
+.room-list{
+  .swiper{
+    padding-top: 12px;
+  }
+  
+  ///Swiper libary//
+  .swiper-slide img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    user-select: none;
+  }
+  
+  .swiper-slide-shadow-left,
+  .swiper-slide-shadow-right {
+    display: none;
+  }
+  
+  .slider-controler {
+    position: absolute;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    top:60%;
+  }
+  
+  .swiper-slide {
+    position: relative;
+    @media (min-width: 640px) and (max-width: 1024px) {
+      
+    }
+  }
+  
+  .slider-controler .swiper-button-next {
+    left: 76%;
+    color: #000;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #f5f5f5;
+    opacity: .5;
+    transition: .5s;
+    &:hover{
+      opacity: 1;
+    }
+  }
+  .slider-controler .swiper-button-prev {
+    left: 5%;
+    color: #000;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #f5f5f5;
+    opacity: .5;
+    transition: .5s;
+    &:hover{
+      opacity: 1;
+    }
+  }
+  
+  
+  .slider-controler .slider-arrow::after {
+    content: '';
   }
 }
 
-.slider-controler .swiper-button-next {
-  left: 75%;
-  color: #fff;
+.text-red{
+  color: red;
 }
-.slider-controler .swiper-button-prev {
-  left: 23%;
-  color: #fff;
-}
-
-
-.slider-controler .slider-arrow::after {
-  content: '';
-}
-.swiper-slide-prev {
-    img {
-      opacity: 0.4;
-    }
-    .container-content {
-      visibility: hidden;
-    }
-    .btn-box{
-      visibility: hidden;
-    }
-  }
-  .swiper-slide-next {
-    img {
-      opacity: 0.4;
-    }
-    .container-content {
-      visibility: hidden;
-    }
-    .btn-box{
-      visibility: hidden;
-    }
-  } 

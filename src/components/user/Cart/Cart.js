@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { IoTrashOutline } from "react-icons/io5";
 import styled from "styled-components";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 const CartStyles = styled.div`
   margin-left: 10px;
   background-color: #fff;
@@ -48,39 +49,40 @@ const CartStyles = styled.div`
     }
   }
 `;
-const Cart = ({ selectedItem, onItemClick }) => {
-  const navigate = useNavigate()
+
+const Cart = ({ selectedItem, onItemClick, className }) => {
+  const navigate = useNavigate();
   const { checkIn, checkOut } = useSelector((state) => state.search.valuesData);
   const [selectedItems, setSelectedItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+
   const formatDate = (date) => {
     const d = new Date(date);
     const day = String(d.getDate()).padStart(2, "0");
-    const month = String(d.getMonth() + 1).padStart(2, "0"); // +1 vì tháng bắt đầu từ 0
+    const month = String(d.getMonth() + 1).padStart(2, "0");
     const year = d.getFullYear();
     return `${day}/${month}/${year}`;
   };
-  const formatcheckIn = formatDate(checkIn);
+
+  const formatCheckIn = formatDate(checkIn);
   const formattedCheckOut = formatDate(checkOut);
   const checkInDate = new Date(checkIn);
   const checkOutDate = new Date(checkOut);
   const timeDifference = checkOutDate.getTime() - checkInDate.getTime();
   const numberOfNights = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
-  useEffect(() => {
-    const storedItems = JSON.parse(localStorage.getItem("selectedItems")) || [];
-    setSelectedItems(storedItems);
-  }, [selectedItem]);
-  console.log(selectedItems);
 
   useEffect(() => {
     const storedItems = JSON.parse(localStorage.getItem("selectedItems")) || [];
     setSelectedItems(storedItems);
+  }, [selectedItem]);
+
+  useEffect(() => {
     let total = 0;
-    storedItems.forEach((item) => {
+    selectedItems.forEach((item) => {
       total += item.price;
     });
     setTotalPrice(total * numberOfNights);
-  }, [selectedItem, numberOfNights]);
+  }, [selectedItems, numberOfNights]);
 
   const handleRemoveItem = (itemId) => {
     const updatedItems = selectedItems.filter((item) => item.id !== itemId);
@@ -88,62 +90,58 @@ const Cart = ({ selectedItem, onItemClick }) => {
     onItemClick(itemId);
     localStorage.setItem("selectedItems", JSON.stringify(updatedItems));
   };
-  
-  console.log(selectedItems.length)
+
   const handleBooking = () => {
-    if(selectedItems.length > 0){
-      navigate("/checkOut")
+    if (selectedItems.length > 0) {
+      navigate("/checkOut");
     }
-    else{
-      return;
-    }
-  }
+  };
+
   useEffect(() => {
-    // Lưu ngày checkIn và checkOut vào localStorage
     localStorage.setItem("checkIn", JSON.stringify(checkIn));
     localStorage.setItem("checkOut", JSON.stringify(checkOut));
   }, [checkIn, checkOut]);
+
   return (
-    <CartStyles>
-      <div>
-        <div className="info-booking">
-          <h3>{`VND ${totalPrice.toLocaleString("vi-VN")} TOTAL`}</h3>
+    <div className={className}>
+      <div className="font-lato">
+        <h3 className="font-semibold text-xl my-3">
+          {`VND ${totalPrice.toLocaleString("vi-VN")} total`}
+        </h3>
+        <div className="flex justify-between">
           <p className="info-date">
-            from <span className="date">{formatcheckIn}</span> to{" "}
-            <span className="date">{formattedCheckOut}</span>
+            <span className="date">{formatCheckIn} - {formattedCheckOut}</span>
           </p>
-          <span>{numberOfNights} night</span>
-        </div>
-        {selectedItems?.map((item) => (
-          <div key={item.id}>
-            <div className="info-select">
-              <span className="title-room">{item.name}</span>
-              <button onClick={() => handleRemoveItem(item.id)}>
-                <IoTrashOutline />
-              </button>
-            </div>
-            <div className="info-price">
-              <span>
-                {item.bed}({item.capacity} guest)
-              </span>
-            </div>
-            <div className="info-price">
-              <span className="info">Price</span>
-              <span>{item.price.toLocaleString("vi-VN")}</span>
-            </div>
-          </div>
-        ))}
-        <div className="info-select">
-          <span className="info">Total Price</span>
-          <span>{totalPrice.toLocaleString("vi-VN")} VND </span>
-        </div>
-        <div className="button">
-          <button onClick={handleBooking} className="button-booking">
-            Book
-          </button>
+          <span>{numberOfNights} night{numberOfNights > 1 ? 's' : ''}</span>
         </div>
       </div>
-    </CartStyles>
+      {selectedItems.map((item) => (
+        <div key={item.id} className="my-3">
+          <div className="flex justify-between items-center">
+            <span className="font-semibold text-sm">{item.name}</span>
+            <button onClick={() => handleRemoveItem(item.id)}>
+              <IoTrashOutline />
+            </button>
+          </div>
+          <span>
+            {item.bed} ({item.capacity} guest{item.capacity > 1 ? 's' : ''})
+          </span>
+          <div className="flex justify-between items-center">
+            <span className="info">Price</span>
+            <span>{item.price.toLocaleString("vi-VN")}</span>
+          </div>
+        </div>
+      ))}
+      <div className="flex justify-between items-center font-semibold italic text-lg">
+        <span className="info">Total Price</span>
+        <span>{totalPrice.toLocaleString("vi-VN")} VND</span>
+      </div>
+      <div className="text-center w-full font-semibold">
+        <button onClick={handleBooking} className="bg-[#C09B5A] w-full py-1">
+          Book
+        </button>
+      </div>
+    </div>
   );
 };
 

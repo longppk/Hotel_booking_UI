@@ -21,6 +21,10 @@ import Profile from "./pages/User/Profile";
 import 'boxicons/css/boxicons.min.css';
 
 import { Navigate } from "react-router-dom";
+import PaymentError from "./pages/User/PaymentError";
+import AuthPopup from "./components/user/Popup/AuthPopup";
+import About from "./module/about/About";
+import AboutPage from "./pages/User/AboutPage";
 function App() {
   const ProtectedRoute = ({ children, role }) => {
     const userRole = localStorage.getItem("role"); // Hoặc cách bạn lưu role của người dùng
@@ -67,6 +71,8 @@ function App() {
         ></Route>
         <Route path="/forgotPass" element={<ForgotPass></ForgotPass>}></Route>
         <Route path="/listRoom" element={<Room></Room>}></Route>
+        <Route path="/payment/error" element={<AuthPopup></AuthPopup>}></Route>
+        <Route path="/about" element={<AboutPage></AboutPage>}></Route>
         <Route
           path="/profile"
           element={

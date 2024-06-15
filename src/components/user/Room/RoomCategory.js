@@ -36,7 +36,7 @@ const RoomCategory = () => {
   }
 
   return (
-    <div className="mt-14">
+    <div className="mt-14 room-category">
       <div className="text-center">
         <h2 className="text-3xl font-montserrat font-medium">Explore Room</h2>
       </div>
@@ -68,8 +68,8 @@ const RoomCategory = () => {
                 <h2 className="font-playfair font-semibold text-xl mb-3">{item.name}</h2>
                 <p className="font-montserrat">{item.description}</p>
               </div>
-              <div>
-                <button onClick={() => detailPage(item.id)} className="btn-box p-2 bg-[#C09B5A] font-montserrat rounded-lg text-white  border-[1px] duration-300 font-medium border-transparent border-solid hover:bg-white hover:text-[#C09B5A] hover:border-[#C09B5A] ">More Detail</button>
+              <div className="btn-box">
+                <button onClick={() => detailPage(item.id)} className=" p-2 bg-[#C09B5A] font-montserrat rounded-lg text-white  border-[1px] duration-300 font-medium border-transparent border-solid hover:bg-white hover:text-[#C09B5A] hover:border-[#C09B5A] ">More Detail</button>
               </div>
             </SwiperSlide>
           ))}

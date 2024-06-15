@@ -11,6 +11,7 @@ module.exports = {
         playfair: ['"Playfair Display"', 'serif'],
         montserratAlt: ['"Montserrat Alternates"', 'sans-serif'],
         montserrat: ['"Montserrat"', 'sans-serif'],
+        lato: ['"Lato"', 'sans-serif'],
       },
     },
   },
