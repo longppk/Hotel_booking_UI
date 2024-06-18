@@ -22,12 +22,15 @@ import { EffectCoverflow, Pagination, Navigation } from "swiper/modules";
 const CheckOut = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [selectedItems, setSelectedItems] = useState([]);
-  const [roomId, setRoomId] = useState([]);
+  const [roomId, setRoomId] = useState("");
+  const [paymentRequest, setPaymentRequest] = useState({});
   const [time, setTime] = useState({
     checkIn: "",
     checkOut: "",
-    night: "",
+    night: 0,
   });
+  const [paymentUrl, setPaymentUrl]= useState(true)
+  const [checked, setChecked] = useState(true)
   const cardId = localStorage.getItem("cardId");
   const { values, handleChange } = useHandleChange({
     cardId: cardId || "",
@@ -37,26 +40,20 @@ const CheckOut = () => {
   });
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+
+  // Function to format date
   const formatDate = (date) => {
     const d = new Date(date);
     const day = String(d.getDate()).padStart(2, "0");
-    const month = String(d.getMonth() + 1).padStart(2, "0"); // +1 vì tháng bắt đầu từ 0
+    const month = String(d.getMonth() + 1).padStart(2, "0"); // +1 because months are zero indexed
     const year = d.getFullYear();
     return `${day}/${month}/${year}`;
   };
 
-  useEffect(() => {
-    const storedItems = JSON.parse(localStorage.getItem("selectedItems")) || [];
-    setSelectedItems(storedItems);
-    let total = 0;
-    storedItems.forEach((item) => {
-      total += item.price;
-    });
-    setTotalPrice(total * time.night);
-  }, [time.night]);
   const CheckIn = JSON.parse(localStorage.getItem("checkIn"));
   const CheckOut = JSON.parse(localStorage.getItem("checkOut"));
 
+  // useEffect to calculate check-in, check-out dates and number of nights
   useEffect(() => {
     const fmcheckIn = formatDate(CheckIn);
     const fmCheckOut = formatDate(CheckOut);
@@ -69,14 +66,22 @@ const CheckOut = () => {
       checkOut: fmCheckOut,
       night: numberOfNights,
     });
-  }, []);
-  useEffect(() => {
-    if (selectedItems.length > 0) {
-      const roomIds = selectedItems.map((item) => item.id); // Lấy ra mảng các roomId
-      setRoomId(roomIds.join(",")); // Kết hợp các roomId lại với nhau thành một chuỗi
-    }
-  }, [selectedItems]);
+  }, [CheckIn, CheckOut]);
 
+  // useEffect to update selected items and calculate total price based on nights
+  useEffect(() => {
+    const storedItems = JSON.parse(localStorage.getItem("selectedItems")) || [];
+    setSelectedItems(storedItems);
+    let total = 0;
+    storedItems.forEach((item) => {
+      total += item.price;
+    });
+    setTotalPrice(total * time.night);
+  }, [time.night]);
+
+  // useEffect to update room IDs and payment request
+
+  // Function to handle checkout
   const handleCheckOut = async () => {
     const errors = {};
     if (values.cardId === "") {
@@ -87,6 +92,7 @@ const CheckOut = () => {
       errors.cardId = "";
     }
     setErrorMessage(errors);
+
     if (!Object.values(errors).some((error) => error !== "")) {
       try {
         const res = await axios.get(
@@ -110,64 +116,111 @@ const CheckOut = () => {
           window.location.href = res1.data.data;
         } else {
           toast.error(
-            "One of room you selected is not available, Please select again",
+            "One of the rooms you selected is not available. Please select again.",
             {
               theme: "colored",
             }
           );
         }
-      } catch (err) {}
-    } else {
-      return;
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
-  console.log(values.cardId);
-  function parseQueryString(url) {
-    // Nếu không có URL được cung cấp, sử dụng URL hiện tại của trình duyệt
-    const queryString = url ? new URL(url).search : window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-
-    const result = {};
-    // Danh sách các trường cần trích xuất từ query string
-    const fields = [
-      "vnp_Amount",
-      "vnp_BankCode",
-      "vnp_BankTranNo",
-      "vnp_CardType",
-      "vnp_OrderInfo",
-      "vnp_PayDate",
-      "vnp_ResponseCode",
-      "vnp_TmnCode",
-      "vnp_TransactionNo",
-      "vnp_TransactionStatus",
-      "vnp_TxnRef",
-      "vnp_SecureHash",
-    ];
-
-    // Lặp qua danh sách trường và thêm giá trị vào đối tượng kết quả
-    fields.forEach((field) => {
-      const value = urlParams.get(field);
-      // Kiểm tra nếu giá trị không null và không rỗng
-        result[field] = value;
-    });
-    console.log(result)
-    return result;
-  }
- 
-
-  // Sử dụng hàm để lấy các giá trị từ query string và xử lý
+  // useEffect to update cardId in localStorage
   useEffect(() => {
     localStorage.setItem("cardId", values.cardId);
   }, [values.cardId]);
 
   useEffect(() => {
-    const queryParams = parseQueryString();
-    if (queryParams.vnp_ResponseCode === "00") {
-      
-    } else if (queryParams.vnp_ResponseCode === "24") {
-      toast.error("Đã hủy thanh toán");
-    }
+    const getListBooking = () => {
+      if (selectedItems.length > 0) {
+        const roomIds = selectedItems.map((item) => item.id).join(",");
+        setRoomId(roomIds);
+        const bookingRequests = selectedItems.map((item) => ({
+          roomId: item.id,
+          status: "SUCCESS",
+          checkIn: CheckIn,
+          checkOut: CheckOut,
+          price: item.price * time.night,
+          cardId: cardId,
+        }));
+        setPaymentRequest((prevState) => ({
+          ...prevState,
+          bookingRequestList: bookingRequests,
+        }));
+        console.log("chay2")
+        setChecked(false)
+      }
+    };
+    getListBooking()
+  },[paymentUrl])
+
+  
+  // Function to parse query string from URL
+  useEffect(() => {
+    const parseQueryString = (url) => {
+      const queryString = url ? new URL(url).search : window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const result = {};
+      const fields = [
+        "vnp_Amount",
+        "vnp_BankCode",
+        "vnp_BankTranNo",
+        "vnp_CardType",
+        "vnp_OrderInfo",
+        "vnp_PayDate",
+        "vnp_ResponseCode",
+        "vnp_TmnCode",
+        "vnp_TransactionNo",
+        "vnp_TransactionStatus",
+        "vnp_TxnRef",
+        "vnp_SecureHash",
+      ];
+    
+      fields.forEach((field) => {
+        const value = urlParams.get(field);
+        if (value !== null) {
+          result[field] = value;
+        }
+      });
+      setPaymentRequest((prevState) => ({ ...prevState, ...result }));
+      setPaymentUrl(false)
+      console.log("chay1")
+    };
+    parseQueryString()
+  },[])
+
+  
+  useEffect(() => {
+    console.log(paymentRequest)
+    console.log("chay3")
+  }, [checked]);
+  
+
+  // useEffect to handle response code from query parameters
+  useEffect(() => {
+    const checkResponse = async () => {
+      try {
+        const res2 = await axios.post(
+          "http://localhost:8080/api/booking/checkout/checkResponse",
+          paymentRequest,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(res2);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    checkResponse();
   }, []);
+
+
   return (
     <div className="flex flex-row w-full pt-24 gap-2 justify-center">
       <div className="w-[50%]">
@@ -239,7 +292,9 @@ const CheckOut = () => {
         ))}
         <div className="bg-white w-full mt-2 p-7">
           <div className="">
-            <span className="bg-[#fce9e9] px-[12px] py-[7px] rounded-full border-solid border-[1px] border-[#C09B5A] text-[#C09B5A] font-semibold">1</span>
+            <span className="bg-[#fce9e9] px-[12px] py-[7px] rounded-full border-solid border-[1px] border-[#C09B5A] text-[#C09B5A] font-semibold">
+              1
+            </span>
             <span className="ml-5 font-semibold text-xl">Your Information</span>
           </div>
           <div className="grid grid-cols-2 gap-x-14 my-8">
@@ -324,7 +379,9 @@ const CheckOut = () => {
             </div>
           </div>
           <div className="detail-title">
-            <span className="bg-[#fce9e9] px-[12px] py-[7px] rounded-full border-solid border-[1px] border-[#C09B5A] text-[#C09B5A] font-semibold">2</span>
+            <span className="bg-[#fce9e9] px-[12px] py-[7px] rounded-full border-solid border-[1px] border-[#C09B5A] text-[#C09B5A] font-semibold">
+              2
+            </span>
             <span className="ml-5 font-semibold text-xl">Complete booking</span>
           </div>
           <div className="mt-8">
@@ -333,7 +390,10 @@ const CheckOut = () => {
               <input className="check" type="checkbox" />
               <p>I have read and agree to the terms and condition</p>
             </div>
-            <button onClick={handleCheckOut} className="w-full bg-[#C09B5A] py-1 font-lato font-semibold">
+            <button
+              onClick={handleCheckOut}
+              className="w-full bg-[#C09B5A] py-1 font-lato font-semibold"
+            >
               booking
             </button>
           </div>
